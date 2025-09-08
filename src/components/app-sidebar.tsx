@@ -1,15 +1,15 @@
 import * as React from "react"
 import {
-  AudioWaveform,
-  BookOpen,
-  Bot,
-  Command,
-  Frame,
-  GalleryVerticalEnd,
-  Map,
-  PieChart,
+  Blocks,
+  Wallet,
+  Zap,
+  Shield,
+  BarChart3,
+  Code,
   Settings2,
-  SquareTerminal,
+  TrendingUp,
+  Database,
+  FileCode,
 } from "lucide-react"
 
 import { NavMain } from "@/components/nav-main"
@@ -23,138 +23,150 @@ import {
   SidebarHeader,
   SidebarRail,
 } from "@/components/ui/sidebar"
+import { useAuth } from '@/hooks/use-auth'
 
-// This is sample data.
+// QBlockk Platform Data
 const data = {
   user: {
-    name: "shadcn",
-    email: "m@example.com",
-    avatar: "/avatars/shadcn.jpg",
+    name: "QBlockk User",
+    email: "user@qblockk.com",
+    avatar: "/avatars/qblockk.jpg",
   },
   teams: [
     {
-      name: "Acme Inc",
-      logo: GalleryVerticalEnd,
-      plan: "Enterprise",
+      name: "QBlockk Mainnet",
+      logo: Blocks,
+      plan: "Production",
     },
     {
-      name: "Acme Corp.",
-      logo: AudioWaveform,
-      plan: "Startup",
+      name: "QBlockk Testnet",
+      logo: Code,
+      plan: "Development",
     },
     {
-      name: "Evil Corp.",
-      logo: Command,
-      plan: "Free",
+      name: "QBlockk Devnet",
+      logo: Database,
+      plan: "Testing",
     },
   ],
   navMain: [
     {
-      title: "Playground",
-      url: "#",
-      icon: SquareTerminal,
+      title: "Dashboard",
+      url: "/",
+      icon: BarChart3,
       isActive: true,
-      items: [
-        {
-          title: "History",
-          url: "#",
-        },
-        {
-          title: "Starred",
-          url: "#",
-        },
-        {
-          title: "Settings",
-          url: "#",
-        },
-      ],
     },
     {
-      title: "Models",
-      url: "#",
-      icon: Bot,
+      title: "Blockchain",
+      url: "/blockchain",
+      icon: Blocks,
       items: [
-        {
-          title: "Genesis",
-          url: "#",
-        },
         {
           title: "Explorer",
-          url: "#",
+          url: "/blockchain/explorer",
         },
         {
-          title: "Quantum",
-          url: "#",
+          title: "Transactions",
+          url: "/blockchain/transactions",
+        },
+        {
+          title: "Validators",
+          url: "/blockchain/validators",
         },
       ],
     },
     {
-      title: "Documentation",
-      url: "#",
-      icon: BookOpen,
+      title: "Smart Contracts",
+      url: "/contracts",
+      icon: FileCode,
       items: [
         {
-          title: "Introduction",
-          url: "#",
+          title: "Deploy",
+          url: "/contracts/deploy",
         },
         {
-          title: "Get Started",
-          url: "#",
+          title: "My Contracts",
+          url: "/contracts/my",
         },
         {
-          title: "Tutorials",
-          url: "#",
+          title: "Templates",
+          url: "/contracts/templates",
+        },
+      ],
+    },
+    {
+      title: "Wallet",
+      url: "/wallet",
+      icon: Wallet,
+      items: [
+        {
+          title: "My Wallets",
+          url: "/wallet/my",
         },
         {
-          title: "Changelog",
-          url: "#",
+          title: "Send",
+          url: "/wallet/send",
+        },
+        {
+          title: "Receive",
+          url: "/wallet/receive",
+        },
+      ],
+    },
+    {
+      title: "DeFi",
+      url: "/defi",
+      icon: TrendingUp,
+      items: [
+        {
+          title: "Swap",
+          url: "/defi/swap",
+        },
+        {
+          title: "Pools",
+          url: "/defi/pools",
+        },
+        {
+          title: "Staking",
+          url: "/defi/staking",
         },
       ],
     },
     {
       title: "Settings",
-      url: "#",
+      url: "/settings",
       icon: Settings2,
-      items: [
-        {
-          title: "General",
-          url: "#",
-        },
-        {
-          title: "Team",
-          url: "#",
-        },
-        {
-          title: "Billing",
-          url: "#",
-        },
-        {
-          title: "Limits",
-          url: "#",
-        },
-      ],
     },
   ],
   projects: [
     {
-      name: "Design Engineering",
-      url: "#",
-      icon: Frame,
+      name: "Ethereum Integration",
+      url: "/projects/ethereum",
+      icon: Zap,
     },
     {
-      name: "Sales & Marketing",
-      url: "#",
-      icon: PieChart,
+      name: "Polygon Bridge",
+      url: "/projects/polygon",
+      icon: Shield,
     },
     {
-      name: "Travel",
-      url: "#",
-      icon: Map,
+      name: "Custom Blockchain",
+      url: "/projects/custom",
+      icon: Code,
     },
   ],
 }
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const { user } = useAuth()
+
+  // Use authenticated user data or fallback to sample data
+  const userData = user ? {
+    name: user.full_name,
+    email: user.email,
+    avatar: `https://ui-avatars.com/api/?name=${encodeURIComponent(user.full_name)}&background=random`
+  } : data.user
+
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
@@ -165,7 +177,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <NavProjects projects={data.projects} />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} />
+        <NavUser user={userData} />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>
