@@ -1,69 +1,162 @@
-# React + TypeScript + Vite
+# QBlockk Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A modern React application built with TypeScript, featuring a sophisticated sidebar navigation system and modern UI components.
 
-Currently, two official plugins are available:
+## 🚀 Tech Stack
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **React 19** - Latest React with concurrent features
+- **TypeScript** - Type-safe development
+- **Vite** - Fast build tool and dev server
+- **TanStack Router** - Type-safe routing with file-based routing
+- **Tailwind CSS** - Utility-first CSS framework
+- **shadcn/ui** - Beautiful, accessible UI components
+- **Radix UI** - Unstyled, accessible UI primitives
+- **Lucide React** - Beautiful & consistent icon toolkit
+- **Zustand** - Lightweight state management
+- **TanStack Query** - Powerful data synchronization
 
-## Expanding the ESLint configuration
+## 📁 Project Structure
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```
+src/
+├── components/           # Reusable UI components
+│   ├── ui/              # shadcn/ui components
+│   ├── app-sidebar.tsx  # Main sidebar component
+│   ├── nav-main.tsx     # Main navigation
+│   ├── nav-projects.tsx # Projects navigation
+│   ├── nav-user.tsx     # User profile section
+│   └── team-switcher.tsx # Team/organization switcher
+├── routes/              # File-based routing
+│   ├── __root.tsx       # Root layout with sidebar
+│   ├── index.tsx        # Home page
+│   └── about.tsx        # About page
+├── assets/              # Static assets
+├── global.css           # Global styles
+└── main.tsx            # Application entry point
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## 🎨 Features
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+- **Collapsible Sidebar** - Responsive sidebar with icon mode
+- **Modern UI Components** - Built with shadcn/ui and Radix UI
+- **Type-Safe Routing** - File-based routing with TanStack Router
+- **Responsive Design** - Mobile-first approach with Tailwind CSS
+- **Dark/Light Theme** - Built-in theme support
+- **Accessibility** - WCAG compliant components
+- **Developer Experience** - Hot reload, TypeScript, ESLint
 
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## 🛠️ Getting Started
+
+### Prerequisites
+
+- Node.js 18+ 
+- pnpm (recommended) or npm
+
+### Installation
+
+1. Clone the repository:
+```bash
+git clone https://github.com/Qblockk/Qblockk-front-end.git
+cd qblockk-front-end
 ```
+
+2. Install dependencies:
+```bash
+pnpm install
+# or
+npm install
+```
+
+3. Start the development server:
+```bash
+pnpm dev
+# or
+npm run dev
+```
+
+4. Open [http://localhost:5173](http://localhost:5173) in your browser.
+
+## 📜 Available Scripts
+
+- `pnpm dev` - Start development server
+- `pnpm build` - Build for production
+- `pnpm preview` - Preview production build
+- `pnpm lint` - Run ESLint
+
+## 🎯 Key Components
+
+### AppSidebar
+The main sidebar component featuring:
+- Team/organization switcher
+- Collapsible navigation sections
+- Project management
+- User profile section
+
+### Navigation Structure
+- **Platform** - Main application sections
+- **Projects** - Project-specific navigation
+- **User** - Account and profile management
+
+## 🎨 Styling
+
+The project uses Tailwind CSS with a custom design system:
+- Consistent spacing and typography
+- Responsive breakpoints
+- Dark/light theme support
+- Custom component variants
+
+## 🔧 Configuration
+
+### Path Aliases
+- `@/*` - Points to `./src/*`
+
+### TypeScript
+- Strict mode enabled
+- Path mapping configured
+- React JSX transform
+
+### Vite
+- SWC for fast compilation
+- TanStack Router plugin
+- Tailwind CSS integration
+
+## 📦 Dependencies
+
+### Core
+- React 19.1.1
+- TypeScript 5.8.3
+- Vite 7.1.2
+
+### UI & Styling
+- Tailwind CSS 4.1.13
+- shadcn/ui components
+- Radix UI primitives
+- Lucide React icons
+
+### Routing & State
+- TanStack Router 1.131.35
+- Zustand 5.0.8
+- TanStack Query 5.87.1
+
+## 🚀 Deployment
+
+Build the project for production:
+
+```bash
+pnpm build
+```
+
+The built files will be in the `dist/` directory, ready for deployment to any static hosting service.
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Run tests and linting
+5. Submit a pull request
+
+## 📄 License
+
+This project is private and proprietary.
+
