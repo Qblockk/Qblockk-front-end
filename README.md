@@ -1,49 +1,92 @@
-# QBlockk Frontend
+# QBLOCK Frontend
 
-A modern React application built with TypeScript, featuring a sophisticated sidebar navigation system and modern UI components.
+Sistema de certificación de documentos en blockchain XRP Ledger - Interfaz de usuario moderna y minimalista.
 
 ## 🚀 Tech Stack
 
-- **React 19** - Latest React with concurrent features
-- **TypeScript** - Type-safe development
-- **Vite** - Fast build tool and dev server
-- **TanStack Router** - Type-safe routing with file-based routing
-- **Tailwind CSS** - Utility-first CSS framework
-- **shadcn/ui** - Beautiful, accessible UI components
-- **Radix UI** - Unstyled, accessible UI primitives
+- **React 19.1.1** - Latest React with concurrent features
+- **TypeScript 5.8.3** - Type-safe development
+- **Vite 7.1.2** - Ultra-fast build tool and dev server
+- **TanStack Router 1.131.35** - File-based routing con type-safety
+- **TanStack Query 5.87.1** - Server state management
+- **Zustand 5.0.8** - Global state management
+- **Axios 1.13.2** - HTTP client con interceptors
+- **Sonner 2.0.7** - Notificaciones modernas
+- **react-hook-form + zod** - Validación de formularios
+- **shadcn/ui** - Componentes UI modernos (New York style)
+- **Tailwind CSS 4.1.13** - Utility-first CSS framework
 - **Lucide React** - Beautiful & consistent icon toolkit
-- **Zustand** - Lightweight state management
-- **TanStack Query** - Powerful data synchronization
 
 ## 📁 Project Structure
 
 ```
 src/
-├── components/           # Reusable UI components
-│   ├── ui/              # shadcn/ui components
-│   ├── app-sidebar.tsx  # Main sidebar component
-│   ├── nav-main.tsx     # Main navigation
-│   ├── nav-projects.tsx # Projects navigation
-│   ├── nav-user.tsx     # User profile section
-│   └── team-switcher.tsx # Team/organization switcher
-├── routes/              # File-based routing
-│   ├── __root.tsx       # Root layout with sidebar
-│   ├── index.tsx        # Home page
-│   └── about.tsx        # About page
-├── assets/              # Static assets
-├── global.css           # Global styles
-└── main.tsx            # Application entry point
+├── components/          # Componentes React
+│   ├── ui/             # shadcn/ui components (14 componentes)
+│   ├── app-sidebar.tsx # Sidebar principal con navegación
+│   ├── nav-main.tsx    # Navegación principal
+│   └── nav-user.tsx    # Menú de usuario con logout
+├── hooks/              # Custom hooks
+│   ├── use-auth.ts     # Hook de autenticación con mutations
+│   ├── use-documents.ts # Hook de documentos con TanStack Query
+│   └── use-mobile.ts   # Detección de dispositivo móvil
+├── lib/                # Utilidades y configuración
+│   ├── api-config.ts   # Configuración de URLs backend
+│   ├── axios.ts        # Instancia axios con interceptors JWT
+│   └── utils.ts        # Helper functions
+├── routes/             # File-based routing de TanStack Router
+│   ├── __root.tsx      # Layout raíz (Toaster, DevTools)
+│   ├── login.tsx       # Página de login pública
+│   ├── verify.tsx      # Verificación pública de documentos
+│   └── _authenticated/ # Rutas protegidas con middleware
+│       ├── index.tsx   # Dashboard principal
+│       └── documents/  # Gestión de documentos
+│           ├── index.tsx  # Lista de documentos con tabla
+│           └── upload.tsx # Subir documento (drag & drop)
+├── services/           # API services con axios
+│   ├── auth-service.ts     # Login, register, refresh, logout
+│   └── document-service.ts # Upload, list, certify, verify
+├── stores/             # Zustand stores
+│   └── auth-store.ts   # Store de autenticación (persist)
+├── assets/             # Imágenes y archivos estáticos
+├── global.css          # Estilos globales de Tailwind
+└── main.tsx           # Entry point con QueryClient y Router
 ```
 
 ## 🎨 Features
 
-- **Collapsible Sidebar** - Responsive sidebar with icon mode
-- **Modern UI Components** - Built with shadcn/ui and Radix UI
-- **Type-Safe Routing** - File-based routing with TanStack Router
-- **Responsive Design** - Mobile-first approach with Tailwind CSS
-- **Dark/Light Theme** - Built-in theme support
-- **Accessibility** - WCAG compliant components
-- **Developer Experience** - Hot reload, TypeScript, ESLint
+### Autenticación
+- ✅ Login con JWT y refresh tokens
+- ✅ Registro de usuarios
+- ✅ Protected routes con middleware de TanStack Router
+- ✅ Auto-refresh de tokens (401 interceptor)
+- ✅ Logout con limpieza de estado
+- ✅ Persist de sesión con Zustand
+
+### Gestión de Documentos
+- ✅ Subir documentos con drag & drop
+- ✅ Lista de documentos con tabla shadcn/ui
+- ✅ Certificar documentos en blockchain XRP Ledger
+- ✅ Descargar documentos
+- ✅ Eliminar documentos (soft delete)
+- ✅ Ver hash SHA-256 del documento
+- ✅ Ver transacción blockchain en explorador
+- ✅ Estados: pending, certified, failed
+
+### Verificación Pública
+- ✅ Verificar autenticidad de documentos sin login
+- ✅ Ver información de certificación blockchain
+- ✅ Link directo al explorador XRP Ledger
+
+### UX/UI
+- ✅ Diseño minimalista con shadcn/ui (New York style)
+- ✅ Sidebar colapsable responsive
+- ✅ Notificaciones modernas con Sonner
+- ✅ Loading states con Skeleton
+- ✅ Validación de formularios con react-hook-form + zod
+- ✅ Responsive design mobile-first
+- ✅ Manejo de errores con toasts
+- ✅ Progress bars para uploads
 
 ## 🛠️ Getting Started
 
