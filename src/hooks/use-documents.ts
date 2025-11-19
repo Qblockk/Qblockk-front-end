@@ -14,7 +14,7 @@ export const useDocuments = () => {
     mutationFn: (file: File) => documentService.upload(file),
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ['documents'] });
-      toast.success(`Documento "${data.document.fileName}" subido exitosamente`);
+      toast.success(`Documento "${data.document.filename}" subido exitosamente`);
     },
     onError: (error: any) => {
       const message = error.response?.data?.message || 'Error al subir documento';
@@ -64,6 +64,7 @@ export const useDocuments = () => {
     isError: documentsQuery.isError,
     error: documentsQuery.error,
     upload: uploadMutation.mutate,
+    uploadAsync: uploadMutation.mutateAsync,
     isUploading: uploadMutation.isPending,
     certify: certifyMutation.mutate,
     isCertifying: certifyMutation.isPending,

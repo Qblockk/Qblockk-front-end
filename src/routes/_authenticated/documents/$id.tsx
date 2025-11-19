@@ -15,11 +15,14 @@ import {
     TableHeader,
     TableRow,
 } from '@/components/ui/table';
-import { ArrowLeft, Download, Shield, ExternalLink, FileText } from 'lucide-react';
+import { ArrowLeft, Download, Shield, ExternalLink, FileText, Copy, Check } from 'lucide-react';
+import { useState } from 'react';
+import { toast } from 'sonner';
 
 const DocumentDetailPage = () => {
     const { id } = Route.useParams();
     const { data: document, isLoading } = useDocument(id);
+    const [copiedHash, setCopiedHash] = useState<string | null>(null);
 
     const { data: verificationsData } = useQuery({
         queryKey: ['verifications', id],
@@ -28,6 +31,13 @@ const DocumentDetailPage = () => {
     });
 
     const verifications = Array.isArray(verificationsData) ? verificationsData : [];
+
+    const copyToClipboard = (text: string, type: 'hash' | 'tx') => {
+        navigator.clipboard.writeText(text);
+        setCopiedHash(type);
+        toast.success(type === 'hash' ? 'Hash copiado' : 'Transacción copiada');
+        setTimeout(() => setCopiedHash(null), 2000);
+    };
 
     const formatDate = (date: string) => {
         return new Date(date).toLocaleDateString('es-ES', {
@@ -87,7 +97,7 @@ const DocumentDetailPage = () => {
                     <h1 className="text-3xl font-bold mt-4">Detalles del Documento</h1>
                 </div>
                 <div className="flex gap-2">
-                    {document.status === 'pending' && (
+                    {document.blockchainStatus === 'pending' && (
                         <Button variant="outline">
                             <Shield className="mr-2 h-4 w-4" />
                             Certificar
@@ -110,7 +120,7 @@ const DocumentDetailPage = () => {
                             <p className="text-sm text-neutral-500">Nombre del Archivo</p>
                             <div className="flex items-center gap-2 mt-1">
                                 <FileText className="h-4 w-4 text-blue-500" />
-                                <p className="font-medium">{document.fileName}</p>
+                                <p className="font-medium">{document.filename}</p>
                             </div>
                         </div>
 
@@ -123,7 +133,7 @@ const DocumentDetailPage = () => {
                             </div>
                             <div>
                                 <p className="text-sm text-neutral-500">Tipo</p>
-                                <p className="font-medium">{document.mimeType}</p>
+                                <p className="font-medium">{document.fileType}</p>
                             </div>
                         </div>
 
@@ -132,9 +142,9 @@ const DocumentDetailPage = () => {
                         <div>
                             <p className="text-sm text-neutral-500">Estado</p>
                             <div className="mt-1">
-                                {document.status === 'certified' ? (
+                                {document.blockchainStatus === 'certified' ? (
                                     <Badge className="bg-green-500">Certificado</Badge>
-                                ) : document.status === 'pending' ? (
+                                ) : document.blockchainStatus === 'pending' ? (
                                     <Badge variant="outline" className="text-yellow-600 border-yellow-600">
                                         Pendiente
                                     </Badge>
@@ -149,7 +159,7 @@ const DocumentDetailPage = () => {
                         <div className="grid grid-cols-2 gap-4">
                             <div>
                                 <p className="text-sm text-neutral-500">Fecha de Subida</p>
-                                <p className="font-medium text-sm">{formatDate(document.uploadedAt)}</p>
+                                <p className="font-medium text-sm">{formatDate(document.createdAt)}</p>
                             </div>
                             {document.certifiedAt && (
                                 <div>
@@ -169,14 +179,28 @@ const DocumentDetailPage = () => {
                         </CardDescription>
                     </CardHeader>
                     <CardContent>
-                        <code className="block bg-neutral-100 p-3 rounded text-xs break-all">
-                            {document.hash}
-                        </code>
+                        <div className="relative group">
+                            <code className="block bg-neutral-100 p-3 rounded text-xs break-all pr-10">
+                                {document.fileHash}
+                            </code>
+                            <Button
+                                variant="ghost"
+                                size="icon"
+                                className="absolute top-1 right-1 h-6 w-6 text-neutral-500 hover:text-neutral-900"
+                                onClick={() => copyToClipboard(document.fileHash, 'hash')}
+                            >
+                                {copiedHash === 'hash' ? (
+                                    <Check className="h-3 w-3 text-green-500" />
+                                ) : (
+                                    <Copy className="h-3 w-3" />
+                                )}
+                            </Button>
+                        </div>
                     </CardContent>
                 </Card>
             </div>
 
-            {document.blockchain && (
+            {document.xrpTxHash && (
                 <Card>
                     <CardHeader>
                         <CardTitle>Información de Blockchain</CardTitle>
@@ -187,27 +211,41 @@ const DocumentDetailPage = () => {
                     <CardContent className="space-y-4">
                         <div>
                             <p className="text-sm text-neutral-500">Hash de Transacción</p>
-                            <code className="block bg-neutral-100 p-2 rounded text-xs break-all mt-1">
-                                {document.blockchain.transactionHash}
-                            </code>
+                            <div className="relative group mt-1">
+                                <code className="block bg-neutral-100 p-2 rounded text-xs break-all pr-10">
+                                    {document.xrpTxHash}
+                                </code>
+                                <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    className="absolute top-1 right-1 h-6 w-6 text-neutral-500 hover:text-neutral-900"
+                                    onClick={() => copyToClipboard(document.xrpTxHash!, 'tx')}
+                                >
+                                    {copiedHash === 'tx' ? (
+                                        <Check className="h-3 w-3 text-green-500" />
+                                    ) : (
+                                        <Copy className="h-3 w-3" />
+                                    )}
+                                </Button>
+                            </div>
                         </div>
 
                         <div className="grid grid-cols-2 gap-4">
                             <div>
                                 <p className="text-sm text-neutral-500">Red</p>
-                                <p className="font-medium">{document.blockchain.network}</p>
+                                <p className="font-medium">Testnet</p>
                             </div>
                             <div>
-                                <p className="text-sm text-neutral-500">Timestamp</p>
+                                <p className="text-sm text-neutral-500">Ledger Index</p>
                                 <p className="font-medium text-sm">
-                                    {formatDate(document.blockchain.timestamp)}
+                                    {document.xrpLedgerIndex}
                                 </p>
                             </div>
                         </div>
 
                         <div>
                             <a
-                                href={document.blockchain.explorerUrl}
+                                href={`https://testnet.xrpl.org/transactions/${document.xrpTxHash}`}
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="inline-flex items-center gap-2 text-blue-600 hover:underline"

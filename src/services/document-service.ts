@@ -3,21 +3,21 @@ import { API_CONFIG } from '@/lib/api-config';
 
 export interface Document {
   _id: string;
-  userId: string;
-  fileName: string;
+  filename: string;
+  originalName: string;
+  fileType: string;
   fileSize: number;
-  mimeType: string;
-  hash: string;
-  status: 'pending' | 'certified' | 'failed';
-  blockchain?: {
-    transactionHash: string;
-    network: string;
-    timestamp: string;
-    explorerUrl: string;
-  };
-  uploadedAt: string;
+  fileHash: string;
+  blockchainStatus: 'pending' | 'certified' | 'failed';
+  xrpTxHash?: string;
+  xrpLedgerIndex?: number;
   certifiedAt?: string;
-  deletedAt?: string;
+  verificationCount?: number;
+  lastVerifiedAt?: string;
+  createdAt: string;
+  updatedAt: string;
+  description?: string;
+  tags?: string[];
 }
 
 export interface UploadDocumentResponse {
@@ -49,7 +49,7 @@ export const documentService = {
     const formData = new FormData();
     formData.append('document', file);
 
-    const response = await documentApi.post<UploadDocumentResponse>(
+    const response = await documentApi.post(
       API_CONFIG.DOCUMENT_SERVICE.ENDPOINTS.UPLOAD,
       formData,
       {
@@ -59,28 +59,38 @@ export const documentService = {
       }
     );
 
-    return response.data;
+    return {
+      document: response.data.data.document,
+      message: response.data.message
+    };
   },
 
   async list(): Promise<Document[]> {
-    const response = await documentApi.get<Document[]>(
+    const response = await documentApi.get(
       API_CONFIG.DOCUMENT_SERVICE.ENDPOINTS.LIST
     );
-    return response.data;
+    return response.data.data.documents;
   },
 
   async getById(id: string): Promise<Document> {
-    const response = await documentApi.get<Document>(
+    const response = await documentApi.get(
       API_CONFIG.DOCUMENT_SERVICE.ENDPOINTS.GET_DOCUMENT(id)
     );
-    return response.data;
+    return response.data.data.document;
   },
 
   async certify(id: string): Promise<CertifyDocumentResponse> {
-    const response = await documentApi.post<CertifyDocumentResponse>(
+    const response = await documentApi.post(
       API_CONFIG.DOCUMENT_SERVICE.ENDPOINTS.CERTIFY(id)
     );
-    return response.data;
+    return {
+      document: response.data.data.document,
+      transaction: {
+        hash: response.data.data.document.xrpTxHash,
+        explorerUrl: `https://testnet.xrpl.org/transactions/${response.data.data.document.xrpTxHash}`
+      },
+      message: response.data.message
+    };
   },
 
   async download(id: string, fileName: string): Promise<void> {

@@ -52,7 +52,9 @@ const DocumentsListPage = () => {
 
   const handleConfirmDelete = () => {
     if (documentToDelete) {
-      deleteDocument(documentToDelete._id);
+      // @ts-ignore
+      const docId = documentToDelete.id || documentToDelete._id;
+      deleteDocument(docId);
       setDeleteDialogOpen(false);
       setDocumentToDelete(null);
     }
@@ -63,7 +65,7 @@ const DocumentsListPage = () => {
     setDocumentToDelete(null);
   };
 
-  const getStatusBadge = (status: Document['status']) => {
+  const getStatusBadge = (status: Document['blockchainStatus']) => {
     switch (status) {
       case 'certified':
         return <Badge className="bg-green-500">Certificado</Badge>;
@@ -122,7 +124,7 @@ const DocumentsListPage = () => {
           <CardHeader className="pb-3">
             <CardDescription>Certificados</CardDescription>
             <CardTitle className="text-3xl text-green-600">
-              {documents.filter((d) => d.status === 'certified').length}
+              {documents.filter((d) => d.blockchainStatus === 'certified').length}
             </CardTitle>
           </CardHeader>
         </Card>
@@ -130,7 +132,7 @@ const DocumentsListPage = () => {
           <CardHeader className="pb-3">
             <CardDescription>Pendientes</CardDescription>
             <CardTitle className="text-3xl text-yellow-600">
-              {documents.filter((d) => d.status === 'pending').length}
+              {documents.filter((d) => d.blockchainStatus === 'pending').length}
             </CardTitle>
           </CardHeader>
         </Card>
@@ -177,22 +179,22 @@ const DocumentsListPage = () => {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {documents.map((doc) => (
-                  <TableRow key={doc._id}>
+                {documents.map((doc: any) => (
+                  <TableRow key={doc.id || doc._id}>
                     <TableCell className="font-medium">
                       <div className="flex items-center gap-2">
                         <FileText className="h-4 w-4 text-blue-500" />
-                        {doc.fileName}
+                        {doc.filename}
                       </div>
                     </TableCell>
                     <TableCell>{formatFileSize(doc.fileSize)}</TableCell>
-                    <TableCell>{getStatusBadge(doc.status)}</TableCell>
+                    <TableCell>{getStatusBadge(doc.blockchainStatus)}</TableCell>
                     <TableCell className="text-sm text-neutral-500">
-                      {formatDate(doc.uploadedAt)}
+                      {formatDate(doc.createdAt)}
                     </TableCell>
                     <TableCell>
                       <code className="text-xs bg-neutral-100 px-2 py-1 rounded">
-                        {doc.hash.substring(0, 16)}...
+                        {doc.fileHash.substring(0, 16)}...
                       </code>
                     </TableCell>
                     <TableCell className="text-right">
@@ -206,9 +208,9 @@ const DocumentsListPage = () => {
                           <DropdownMenuLabel>Acciones</DropdownMenuLabel>
                           <DropdownMenuSeparator />
 
-                          {doc.status === 'pending' && (
+                          {doc.blockchainStatus === 'pending' && (
                             <DropdownMenuItem
-                              onClick={() => certify(doc._id)}
+                              onClick={() => certify(doc.id || doc._id)}
                               disabled={isCertifying}
                             >
                               <Shield className="mr-2 h-4 w-4" />
@@ -217,16 +219,16 @@ const DocumentsListPage = () => {
                           )}
 
                           <DropdownMenuItem
-                            onClick={() => download(doc._id, doc.fileName)}
+                            onClick={() => download(doc.id || doc._id, doc.filename)}
                           >
                             <Download className="mr-2 h-4 w-4" />
                             Descargar
                           </DropdownMenuItem>
 
-                          {doc.blockchain?.explorerUrl && (
+                          {doc.xrpTxHash && (
                             <DropdownMenuItem asChild>
                               <a
-                                href={doc.blockchain.explorerUrl}
+                                href={`https://testnet.xrpl.org/transactions/${doc.xrpTxHash}`}
                                 target="_blank"
                                 rel="noopener noreferrer"
                               >
@@ -267,7 +269,7 @@ const DocumentsListPage = () => {
           {documentToDelete && (
             <div className="py-4">
               <p className="text-sm text-neutral-600">
-                Documento: <span className="font-medium">{documentToDelete.fileName}</span>
+                Documento: <span className="font-medium">{documentToDelete.filename}</span>
               </p>
             </div>
           )}

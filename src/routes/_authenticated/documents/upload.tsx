@@ -9,7 +9,7 @@ import { Upload, FileText, AlertCircle, CheckCircle2 } from 'lucide-react';
 
 const UploadDocumentPage = () => {
   const navigate = useNavigate();
-  const { upload, isUploading } = useDocuments();
+  const { uploadAsync, isUploading } = useDocuments();
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [dragActive, setDragActive] = useState(false);
 
@@ -39,14 +39,16 @@ const UploadDocumentPage = () => {
     }
   };
 
-  const handleUpload = () => {
+  const handleUpload = async () => {
     if (selectedFile) {
-      upload(selectedFile, {
-        onSuccess: () => {
-          setSelectedFile(null);
-          setTimeout(() => navigate({ to: '/documents' }), 1500);
-        },
-      });
+      try {
+        await uploadAsync(selectedFile);
+        setSelectedFile(null);
+        setTimeout(() => navigate({ to: '/documents' }), 1500);
+      } catch (error) {
+        // Error is already handled by the mutation's onError
+        console.error('Upload failed:', error);
+      }
     }
   };
 

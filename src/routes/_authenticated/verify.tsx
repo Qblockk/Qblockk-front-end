@@ -36,16 +36,15 @@ const VerifyDocumentPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-neutral-50 p-4 md:p-8">
-      <div className="max-w-4xl mx-auto space-y-6">
-        <div className="text-center">
-          <h1 className="text-4xl font-bold">Verificar Documento</h1>
-          <p className="text-neutral-500 mt-2">
-            Verifica la autenticidad de un documento certificado en blockchain
-          </p>
-        </div>
+    <div className="space-y-6">
+      <div>
+        <h1 className="text-3xl font-bold">Verificar Documento</h1>
+        <p className="text-neutral-500 mt-2">
+          Verifica la autenticidad de un documento certificado en blockchain
+        </p>
+      </div>
 
-        <Card>
+      <Card>
           <CardHeader>
             <CardTitle>Selecciona el Documento a Verificar</CardTitle>
             <CardDescription>
@@ -107,8 +106,8 @@ const VerifyDocumentPage = () => {
           </CardContent>
         </Card>
 
-        {result && (
-          <Card>
+      {result && (
+        <Card>
             <CardHeader>
               <CardTitle>Resultado de la Verificación</CardTitle>
             </CardHeader>
@@ -217,9 +216,9 @@ const VerifyDocumentPage = () => {
               )}
             </CardContent>
           </Card>
-        )}
+      )}
 
-        <Card>
+      <Card>
           <CardHeader>
             <CardTitle>¿Cómo funciona?</CardTitle>
           </CardHeader>
@@ -251,12 +250,11 @@ const VerifyDocumentPage = () => {
               </li>
             </ol>
           </CardContent>
-        </Card>
-      </div>
+      </Card>
     </div>
   );
 };
 
-export const Route = createFileRoute('/verify')({
+export const Route = createFileRoute('/_authenticated/verify')({
   component: VerifyDocumentPage,
 });

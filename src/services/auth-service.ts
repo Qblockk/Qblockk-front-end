@@ -22,19 +22,29 @@ export interface AuthResponse {
 
 export const authService = {
   async login(credentials: LoginCredentials): Promise<AuthResponse> {
-    const response = await authApi.post<AuthResponse>(
+    const response = await authApi.post(
       API_CONFIG.AUTH_SERVICE.ENDPOINTS.LOGIN,
       credentials
     );
-    return response.data;
+    // El backend devuelve { success, message, data: { user, tokens: { accessToken, refreshToken } } }
+    return {
+      user: response.data.data.user,
+      accessToken: response.data.data.tokens.accessToken,
+      refreshToken: response.data.data.tokens.refreshToken
+    };
   },
 
   async register(data: RegisterData): Promise<AuthResponse> {
-    const response = await authApi.post<AuthResponse>(
+    const response = await authApi.post(
       API_CONFIG.AUTH_SERVICE.ENDPOINTS.REGISTER,
       data
     );
-    return response.data;
+    // El backend devuelve { success, message, data: { user, tokens: { accessToken, refreshToken } } }
+    return {
+      user: response.data.data.user,
+      accessToken: response.data.data.tokens.accessToken,
+      refreshToken: response.data.data.tokens.refreshToken
+    };
   },
 
   async logout(): Promise<void> {
@@ -42,17 +52,23 @@ export const authService = {
   },
 
   async getProfile(): Promise<User> {
-    const response = await authApi.get<User>(
+    const response = await authApi.get(
       API_CONFIG.AUTH_SERVICE.ENDPOINTS.PROFILE
     );
-    return response.data;
+    // El backend devuelve { success, data: { user } }
+    return response.data.data.user;
   },
 
   async refreshToken(refreshToken: string): Promise<AuthResponse> {
-    const response = await authApi.post<AuthResponse>(
+    const response = await authApi.post(
       API_CONFIG.AUTH_SERVICE.ENDPOINTS.REFRESH,
       { refreshToken }
     );
-    return response.data;
+    // El backend devuelve { success, message, data: { accessToken, user } }
+    return {
+      user: response.data.data.user,
+      accessToken: response.data.data.accessToken,
+      refreshToken: refreshToken // El backend no devuelve un nuevo refreshToken
+    };
   },
 };

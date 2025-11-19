@@ -1,4 +1,5 @@
 import { ChevronRight, type LucideIcon } from "lucide-react"
+import { Link } from "@tanstack/react-router"
 
 import {
   Collapsible,
@@ -42,26 +43,50 @@ export function NavMain({
             className="group/collapsible"
           >
             <SidebarMenuItem>
-              <CollapsibleTrigger asChild>
-                <SidebarMenuButton tooltip={item.title}>
-                  {item.icon && <item.icon />}
-                  <span>{item.title}</span>
-                  <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
+              {item.items && item.items.length > 0 ? (
+                <>
+                  <CollapsibleTrigger asChild>
+                    <SidebarMenuButton tooltip={item.title}>
+                      {item.icon && <item.icon />}
+                      <span>{item.title}</span>
+                      <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
+                    </SidebarMenuButton>
+                  </CollapsibleTrigger>
+                  <CollapsibleContent>
+                    <SidebarMenuSub>
+                      {item.items.map((subItem) => (
+                        <SidebarMenuSubItem key={subItem.title}>
+                          <SidebarMenuSubButton asChild>
+                            {subItem.url.startsWith('http') ? (
+                              <a href={subItem.url} target="_blank" rel="noopener noreferrer">
+                                <span>{subItem.title}</span>
+                              </a>
+                            ) : (
+                              <Link to={subItem.url}>
+                                <span>{subItem.title}</span>
+                              </Link>
+                            )}
+                          </SidebarMenuSubButton>
+                        </SidebarMenuSubItem>
+                      ))}
+                    </SidebarMenuSub>
+                  </CollapsibleContent>
+                </>
+              ) : (
+                <SidebarMenuButton asChild tooltip={item.title}>
+                  {item.url.startsWith('http') || item.url === '#' ? (
+                    <a href={item.url} target={item.url.startsWith('http') ? "_blank" : undefined} rel={item.url.startsWith('http') ? "noopener noreferrer" : undefined}>
+                      {item.icon && <item.icon />}
+                      <span>{item.title}</span>
+                    </a>
+                  ) : (
+                    <Link to={item.url}>
+                      {item.icon && <item.icon />}
+                      <span>{item.title}</span>
+                    </Link>
+                  )}
                 </SidebarMenuButton>
-              </CollapsibleTrigger>
-              <CollapsibleContent>
-                <SidebarMenuSub>
-                  {item.items?.map((subItem) => (
-                    <SidebarMenuSubItem key={subItem.title}>
-                      <SidebarMenuSubButton asChild>
-                        <a href={subItem.url}>
-                          <span>{subItem.title}</span>
-                        </a>
-                      </SidebarMenuSubButton>
-                    </SidebarMenuSubItem>
-                  ))}
-                </SidebarMenuSub>
-              </CollapsibleContent>
+              )}
             </SidebarMenuItem>
           </Collapsible>
         ))}
