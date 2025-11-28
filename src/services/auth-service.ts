@@ -20,6 +20,16 @@ export interface AuthResponse {
   refreshToken: string;
 }
 
+// Helper para transformar snake_case a camelCase
+const transformUser = (backendUser: any): User => ({
+  id: backendUser.id,
+  email: backendUser.email,
+  fullName: backendUser.full_name,
+  phone: backendUser.phone,
+  role: backendUser.role,
+  last_log: backendUser.last_log
+});
+
 export const authService = {
   async login(credentials: LoginCredentials): Promise<AuthResponse> {
     const response = await authApi.post(
@@ -28,7 +38,7 @@ export const authService = {
     );
     // El backend devuelve { success, message, data: { user, tokens: { accessToken, refreshToken } } }
     return {
-      user: response.data.data.user,
+      user: transformUser(response.data.data.user),
       accessToken: response.data.data.tokens.accessToken,
       refreshToken: response.data.data.tokens.refreshToken
     };
@@ -41,7 +51,7 @@ export const authService = {
     );
     // El backend devuelve { success, message, data: { user, tokens: { accessToken, refreshToken } } }
     return {
-      user: response.data.data.user,
+      user: transformUser(response.data.data.user),
       accessToken: response.data.data.tokens.accessToken,
       refreshToken: response.data.data.tokens.refreshToken
     };
@@ -56,7 +66,7 @@ export const authService = {
       API_CONFIG.AUTH_SERVICE.ENDPOINTS.PROFILE
     );
     // El backend devuelve { success, data: { user } }
-    return response.data.data.user;
+    return transformUser(response.data.data.user);
   },
 
   async refreshToken(refreshToken: string): Promise<AuthResponse> {
@@ -66,7 +76,7 @@ export const authService = {
     );
     // El backend devuelve { success, message, data: { accessToken, user } }
     return {
-      user: response.data.data.user,
+      user: transformUser(response.data.data.user),
       accessToken: response.data.data.accessToken,
       refreshToken: refreshToken // El backend no devuelve un nuevo refreshToken
     };
